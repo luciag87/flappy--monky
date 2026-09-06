@@ -1,5 +1,5 @@
 'use strict';
-// Toque breve y ligero para cada salto, optimizado para no forzar play/pause continuamente.
+// Toque breve con reproducción conservadora para no forzar seeks continuos en Safari/iPhone.
 const tapAudio=new Audio();
 tapAudio.preload='auto';
 tapAudio.playsInline=true;
@@ -14,18 +14,17 @@ let lastTapSound=0;
 
 function playTapSound(){
   const now=performance.now();
-  if(now-lastTapSound<70)return;
+  const minGap=isMobile?120:85;
+  if(now-lastTapSound<minGap)return;
+  if(!tapAudio.paused&&!tapAudio.ended)return;
   lastTapSound=now;
   try{
-    tapAudio.currentTime=0;
-    if(tapAudio.paused){
-      const p=tapAudio.play();
-      if(p&&p.catch)p.catch(()=>{});
-    }
+    if(tapAudio.ended)tapAudio.currentTime=0;
+    const p=tapAudio.play();
+    if(p&&p.catch)p.catch(()=>{});
   }catch{}
 }
 
-// Conserva la lógica original del salto y añade el sonido solo durante la partida.
 const originalFlap=flap;
 flap=function(){
   const shouldSound=state==='playing';
