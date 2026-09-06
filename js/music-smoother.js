@@ -1,10 +1,10 @@
 'use strict';
-// Balance de audio: música presente pero de fondo, con efectos claros sin sobresalir demasiado.
+// Balance de audio optimizado: evita un segundo bucle requestAnimationFrame permanente.
 const MUSIC_VOLUME=.26;
 const SFX_VOLUME=.52;
 const CROSSFADE_SECONDS=1.35;
 const musicA=musicAudio;
-const musicB=new Audio('assets/audio/monky-background-long.wav?v=21');
+const musicB=new Audio('assets/audio/monky-background-long.wav?v=23');
 musicA.loop=false;musicB.loop=false;
 musicA.preload='auto';musicB.preload='auto';
 musicA.playsInline=true;musicB.playsInline=true;
@@ -36,11 +36,16 @@ function crossfadeMusic(){
   };
   musicFadeFrame=requestAnimationFrame(fade);
 }
-function watchMusicLoop(){
-  if(state==='playing'&&!musicCrossfading&&Number.isFinite(activeMusic.duration)&&activeMusic.duration>0&&activeMusic.duration-activeMusic.currentTime<=CROSSFADE_SECONDS)crossfadeMusic();
-  requestAnimationFrame(watchMusicLoop);
+
+// Comprueba el final solo cuando el navegador informa progreso de audio.
+// El requestAnimationFrame queda reservado únicamente para el fundido de 1,35 s.
+function checkMusicLoop(e){
+  const audio=e.currentTarget;
+  if(audio!==activeMusic||state!=='playing'||musicCrossfading)return;
+  if(Number.isFinite(audio.duration)&&audio.duration>0&&audio.duration-audio.currentTime<=CROSSFADE_SECONDS+.15)crossfadeMusic();
 }
-requestAnimationFrame(watchMusicLoop);
+musicA.addEventListener('timeupdate',checkMusicLoop,{passive:true});
+musicB.addEventListener('timeupdate',checkMusicLoop,{passive:true});
 
 startMusic=function(){
   if(state!=='playing')return;
@@ -68,5 +73,5 @@ function primeSmoothMusic(){
   setMusicVolume(musicB,0);
   try{const p=musicB.play();if(p&&p.then)p.then(()=>{musicB.pause();try{musicB.currentTime=0}catch{}}).catch(()=>{})}catch{}
 }
-startButton.addEventListener('touchstart',primeSmoothMusic,{passive:true,once:true});
+// pointerdown cubre ratón, lápiz y touch; evita preparar dos veces el audio en iPhone.
 startButton.addEventListener('pointerdown',primeSmoothMusic,{passive:true,once:true});
