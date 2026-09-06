@@ -1,9 +1,10 @@
 'use strict';
-// Música ambiente larga para evitar sensación de repetición frecuente.
-const MUSIC_VOLUME=.2048;
+// Balance de audio: música presente pero de fondo, con efectos claros sin sobresalir demasiado.
+const MUSIC_VOLUME=.26;
+const SFX_VOLUME=.52;
 const CROSSFADE_SECONDS=1.35;
 const musicA=musicAudio;
-const musicB=new Audio('assets/audio/monky-background-long.wav?v=20');
+const musicB=new Audio('assets/audio/monky-background-long.wav?v=21');
 musicA.loop=false;musicB.loop=false;
 musicA.preload='auto';musicB.preload='auto';
 musicA.playsInline=true;musicB.playsInline=true;
@@ -50,6 +51,17 @@ startMusic=function(){
 stopMusic=function(){
   cancelMusicFade();
   try{musicA.pause();musicB.pause()}catch{}
+};
+
+// Rebaja únicamente los efectos interactivos; no altera su duración ni su carácter.
+playSfx=function(name){
+  try{
+    sfxAudio.pause();
+    sfxAudio.src=sfxUrls[name];
+    sfxAudio.currentTime=0;
+    sfxAudio.volume=SFX_VOLUME;
+    const p=sfxAudio.play();if(p&&p.catch)p.catch(()=>{});
+  }catch{}
 };
 
 function primeSmoothMusic(){
