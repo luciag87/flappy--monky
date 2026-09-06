@@ -1,9 +1,9 @@
 'use strict';
-// Música ambiente: otro -20% de volumen y transición de loop más natural.
-const MUSIC_VOLUME=.2048; // 20% menos que .256
+// Música ambiente larga para evitar sensación de repetición frecuente.
+const MUSIC_VOLUME=.2048;
 const CROSSFADE_SECONDS=1.35;
 const musicA=musicAudio;
-const musicB=new Audio('assets/bichon-flappy-music.wav?v=19');
+const musicB=new Audio('assets/audio/monky-background-long.wav?v=20');
 musicA.loop=false;musicB.loop=false;
 musicA.preload='auto';musicB.preload='auto';
 musicA.playsInline=true;musicB.playsInline=true;
@@ -23,7 +23,6 @@ function crossfadeMusic(){
   const fade=now=>{
     if(state!=='playing'){cancelMusicFade();return}
     const p=Math.min(1,(now-started)/(CROSSFADE_SECONDS*1000));
-    // Fundido de potencia constante: evita el bajón de volumen típico de un fade lineal.
     const outGain=Math.cos(p*Math.PI/2);
     const inGain=Math.sin(p*Math.PI/2);
     setMusicVolume(activeMusic,MUSIC_VOLUME*outGain);
@@ -42,7 +41,6 @@ function watchMusicLoop(){
 }
 requestAnimationFrame(watchMusicLoop);
 
-// Sustituye únicamente la música de fondo; los efectos mantienen su volumen actual.
 startMusic=function(){
   if(state!=='playing')return;
   cancelMusicFade();
@@ -54,7 +52,6 @@ stopMusic=function(){
   try{musicA.pause();musicB.pause()}catch{}
 };
 
-// Prepara también la segunda pista durante un gesto del usuario para Safari/iPhone.
 function primeSmoothMusic(){
   setMusicVolume(musicB,0);
   try{const p=musicB.play();if(p&&p.then)p.then(()=>{musicB.pause();try{musicB.currentTime=0}catch{}}).catch(()=>{})}catch{}
