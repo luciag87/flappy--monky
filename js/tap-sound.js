@@ -1,5 +1,5 @@
 'use strict';
-// Toque breve, limpio y suave para cada salto/tap del juego.
+// Toque breve y ligero para cada salto, optimizado para no forzar play/pause continuamente.
 const tapAudio=new Audio();
 tapAudio.preload='auto';
 tapAudio.playsInline=true;
@@ -10,18 +10,22 @@ const tapSoundUrl=makeWavUrl([
   [840,.028,.07,'triangle']
 ]);
 tapAudio.src=tapSoundUrl;
+let lastTapSound=0;
 
 function playTapSound(){
+  const now=performance.now();
+  if(now-lastTapSound<70)return;
+  lastTapSound=now;
   try{
-    tapAudio.pause();
     tapAudio.currentTime=0;
-    tapAudio.volume=.18;
-    const p=tapAudio.play();
-    if(p&&p.catch)p.catch(()=>{});
+    if(tapAudio.paused){
+      const p=tapAudio.play();
+      if(p&&p.catch)p.catch(()=>{});
+    }
   }catch{}
 }
 
-// Conserva toda la lógica original del salto y añade el sonido solo durante la partida.
+// Conserva la lógica original del salto y añade el sonido solo durante la partida.
 const originalFlap=flap;
 flap=function(){
   const shouldSound=state==='playing';
