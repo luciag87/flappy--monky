@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Bichón Flappy · Un salto entre las nubes</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <p class="eyebrow">UNA AVENTURA EN EL AIRE</p>
+      <h1>Bichón <span>Flappy</span></h1>
+    </div>
+    <div class="stats">
+      <div class="stat">Puntos<b id="score">0</b></div>
+      <div class="stat">Salchichas<b id="sausages">0</b></div>
+      <div class="stat">Tu récord<b id="best">0</b></div>
+    </div>
+  </header>
+  <div class="stage">
+    <canvas id="game" width="960" height="540" tabindex="0" aria-label="Juego Bichón Flappy. Espacio para saltar y flechas para moverte."></canvas>
+    <div id="overlay" class="overlay"><div class="card">
+      <h2 id="title">¡A volar, pequeño!</h2>
+      <p id="message">Salta, atraviesa los huecos y recoge las pequeñas salchichas.</p>
+      <button id="start" disabled>Cargando al bichón…</button>
+      <small>Espacio para empezar · P para pausar</small>
+    </div></div>
+  </div>
+  <footer>
+    <div><kbd>Espacio</kbd> Saltar &nbsp; <kbd>← ↑ ↓ →</kbd> Moverse</div>
+    <div class="tools"><button id="pause">Pausar</button><button id="restart">Reiniciar</button></div>
+    <span>Evita los obstáculos y recoge salchichitas.</span>
+  </footer>
+  <div class="touch" aria-label="Controles táctiles">
+    <button data-key="ArrowLeft" aria-label="Mover a la izquierda">←</button>
+    <button data-key="ArrowUp" aria-label="Mover arriba">↑</button>
+    <button class="jump" id="jump">Saltar</button>
+    <button data-key="ArrowDown" aria-label="Mover abajo">↓</button>
+    <button data-key="ArrowRight" aria-label="Mover a la derecha">→</button>
+  </div>
+  <p id="status" aria-live="polite" style="text-align:center;color:#a5b5d1;font-size:14px">Tu récord se guarda en este dispositivo.</p>
+</main>
+<script src="js/game.js"></script>
+</body>
+</html>
