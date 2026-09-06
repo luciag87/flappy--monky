@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#111d35">
   <title>Bichón Flappy · Un salto entre las nubes</title>
-  <link rel="stylesheet" href="css/style.css?v=12">
+  <link rel="stylesheet" href="css/style.css?v=13">
 </head>
 <body>
 <main>
@@ -13,9 +13,9 @@
   <div class="stage" id="stage">
     <canvas id="game" width="960" height="540" tabindex="0" aria-label="Juego Bichón Flappy. Toca la pantalla o pulsa espacio para saltar."></canvas>
     <div class="game-hud" aria-label="Marcador del juego">
-      <div class="stat">Puntos<b id="score">0</b></div>
-      <div class="stat">Salchichas<b id="sausages">0</b></div>
-      <div class="stat">Récord<b id="best">0</b></div>
+      <div class="hud-pill hud-sausages" aria-label="Salchichas"><span class="hud-icon" aria-hidden="true">🌭</span><b id="sausages">0</b></div>
+      <div class="hud-score" aria-label="Puntos"><b id="score">0</b></div>
+      <div class="hud-pill hud-best" aria-label="Récord"><span class="hud-icon" aria-hidden="true">🏆</span><b id="best">0</b></div>
     </div>
     <div id="overlay" class="overlay"><div class="card"><h2 id="title">¡A volar, pequeño!</h2><p id="message">Salta, atraviesa los huecos y recoge las pequeñas salchichas.</p><button id="start" disabled>Cargando al bichón…</button><small id="desktop-help">Espacio o clic para saltar · P para pausar</small><small id="mobile-help" hidden>En móvil: pon el teléfono en horizontal y toca la pantalla para saltar.</small></div></div>
   </div>
