@@ -1,9 +1,9 @@
 'use strict';
-// Ajuste de música: -20% de volumen y fundido suave entre repeticiones.
-const MUSIC_VOLUME=.256; // 20% menos que el .32 anterior
-const CROSSFADE_SECONDS=.75;
+// Música ambiente: otro -20% de volumen y transición de loop más natural.
+const MUSIC_VOLUME=.2048; // 20% menos que .256
+const CROSSFADE_SECONDS=1.35;
 const musicA=musicAudio;
-const musicB=new Audio('assets/bichon-flappy-music.wav?v=18');
+const musicB=new Audio('assets/bichon-flappy-music.wav?v=19');
 musicA.loop=false;musicB.loop=false;
 musicA.preload='auto';musicB.preload='auto';
 musicA.playsInline=true;musicB.playsInline=true;
@@ -23,8 +23,11 @@ function crossfadeMusic(){
   const fade=now=>{
     if(state!=='playing'){cancelMusicFade();return}
     const p=Math.min(1,(now-started)/(CROSSFADE_SECONDS*1000));
-    setMusicVolume(activeMusic,MUSIC_VOLUME*(1-p));
-    setMusicVolume(waitingMusic,MUSIC_VOLUME*p);
+    // Fundido de potencia constante: evita el bajón de volumen típico de un fade lineal.
+    const outGain=Math.cos(p*Math.PI/2);
+    const inGain=Math.sin(p*Math.PI/2);
+    setMusicVolume(activeMusic,MUSIC_VOLUME*outGain);
+    setMusicVolume(waitingMusic,MUSIC_VOLUME*inGain);
     if(p<1){musicFadeFrame=requestAnimationFrame(fade);return}
     try{activeMusic.pause();activeMusic.currentTime=0}catch{}
     const old=activeMusic;activeMusic=waitingMusic;waitingMusic=old;
@@ -39,7 +42,7 @@ function watchMusicLoop(){
 }
 requestAnimationFrame(watchMusicLoop);
 
-// Sustituye las funciones de música del juego conservando el resto del audio.
+// Sustituye únicamente la música de fondo; los efectos mantienen su volumen actual.
 startMusic=function(){
   if(state!=='playing')return;
   cancelMusicFade();
